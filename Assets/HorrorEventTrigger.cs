@@ -10,11 +10,10 @@ public class HorrorEventTrigger : MonoBehaviour
 
     public float visibleDuration = 3f;
     public float rushSpeed = 15f;
-    public float rushDuration = 0.5f;
-
     public string gameOverSceneName = "GameOver";
 
     private bool hasTriggered = false;
+    private bool isRushing = false;
 
     private void Start()
     {
@@ -40,25 +39,31 @@ public class HorrorEventTrigger : MonoBehaviour
 
         ghostShadow.SetActive(true);
 
-        // แสดงเงา 3 วินาที
         yield return new WaitForSeconds(visibleDuration);
 
-        // พุ่งเข้าหาผู้เล่น
+        isRushing = true;
+    }
+
+    private void Update()
+    {
+        if (!isRushing || ghostShadow == null || player == null)
+            return;
+
         Vector3 direction =
             (player.position - ghostShadow.transform.position).normalized;
 
-        float elapsed = 0f;
+        ghostShadow.transform.position +=
+            direction * rushSpeed * Time.deltaTime;
+    }
 
-        while (elapsed < rushDuration)
-        {
-            ghostShadow.transform.position +=
-                direction * rushSpeed * Time.deltaTime;
+    // เรียกเมื่อผีชนผู้เล่น
+    public void HitPlayer()
+    {
+        if (!isRushing)
+            return;
 
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        // จบเกมด้วยการเปลี่ยน Scene
+        isRushing = false;
         SceneManager.LoadScene(gameOverSceneName);
     }
 }
+
