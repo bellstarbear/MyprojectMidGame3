@@ -44,19 +44,22 @@ public class PlayerController : MonoBehaviour
             Vector3.up * verticalVelocity * Time.deltaTime
         );
 
-        // ควบคุมกล้องด้วยเมาส์
-        float mouseX = Input.GetAxis("Mouse X")
-                     * mouseSensitivity;
+        // ควบคุมกล้องด้วยเมาส์ (ใส่เงื่อนไขเช็ค Time.timeScale != 0f เพื่อไม่ให้ขยับกล้องเวลาหยุดเวลา)
+        if (Time.timeScale != 0f)
+        {
+            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+            float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        float mouseY = Input.GetAxis("Mouse Y")
-                     * mouseSensitivity;
+            transform.Rotate(Vector3.up * mouseX);
 
-        transform.Rotate(Vector3.up * mouseX);
+            cameraRotationX -= mouseY;
+            cameraRotationX = Mathf.Clamp(cameraRotationX, -80f, 80f);
 
-        cameraRotationX -= mouseY;
-        cameraRotationX = Mathf.Clamp(
-            cameraRotationX, -80f, 80f
-        );
+            if (playerCamera != null)
+            {
+                playerCamera.localRotation = Quaternion.Euler(cameraRotationX, 0f, 0f);
+            }
+        }
 
         if (playerCamera != null)
         {
@@ -71,8 +74,8 @@ public class PlayerController : MonoBehaviour
             Cursor.visible = true;
         }
 
-        // คลิกเพื่อกลับมาควบคุมกล้อง
-        if (Input.GetMouseButtonDown(0))
+        // คลิกเพื่อกลับมาควบคุมกล้อง (เพิ่มเงื่อนไขเช็คว่าถ้าเวลาปกติ Time.timeScale != 0 ค่อยล็อกเมาส์)
+        if (Input.GetMouseButtonDown(0) && Time.timeScale != 0f)
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
