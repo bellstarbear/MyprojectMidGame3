@@ -6,21 +6,21 @@ using UnityEngine.SceneManagement;
 public class PaperQuizController : MonoBehaviour
 {
     [Header("UI Reference")]
-    public GameObject minigameCanvas;
-    public GameObject interactionPromptText;
+    public GameObject minigameCanvas;          
+    public GameObject interactionPromptText;   
 
     [Header("Quiz Content")]
     [TextArea(2, 5)]
-    public string questionText;
-    public TMP_Text uiQuestionText;
+    public string questionText;       
+    public TMP_Text uiQuestionText;   
 
     [Header("Answers & Button")]
-    public Toggle[] answerToggles;
-    public int correctToggleIndex;
-    public Button submitButton;
+    public Toggle[] answerToggles;    
+    public int correctToggleIndex;    
+    public Button submitButton;       
 
     [Header("Scene Transition")]
-    public string winSceneName = "WinScene";
+    public string winSceneName = "WinScene"; 
 
     private bool isPlayerInRange = false;
     private bool isMinigameOpen = false;
