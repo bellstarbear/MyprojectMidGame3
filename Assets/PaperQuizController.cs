@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement; // เพิ่มไลบรารีสำหรับจัดการ Scene
+using UnityEngine.SceneManagement;
 
 public class PaperQuizController : MonoBehaviour
 {
     [Header("UI Reference")]
-    public GameObject minigameCanvas; // หน้าต่างมินิเกมคำถาม
+    public GameObject minigameCanvas;
+    public GameObject interactionPromptText;
 
     [Header("Quiz Content")]
     [TextArea(2, 5)]
@@ -19,7 +20,7 @@ public class PaperQuizController : MonoBehaviour
     public Button submitButton;
 
     [Header("Scene Transition")]
-    public string winSceneName = "WinScene"; // พิมพ์ชื่อ Scene จบเกมของคุณตรงนี้
+    public string winSceneName = "WinScene";
 
     private bool isPlayerInRange = false;
     private bool isMinigameOpen = false;
@@ -28,6 +29,9 @@ public class PaperQuizController : MonoBehaviour
     {
         if (minigameCanvas != null)
             minigameCanvas.SetActive(false);
+
+        if (interactionPromptText != null)
+            interactionPromptText.SetActive(false);
 
         if (submitButton != null)
             submitButton.onClick.AddListener(OnSubmitAnswer);
@@ -43,9 +47,21 @@ public class PaperQuizController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("OnTriggerEnter กับ: " + other.name + " | Tag: " + other.tag);
+
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = true;
+
+            if (interactionPromptText != null && !isMinigameOpen)
+            {
+                interactionPromptText.SetActive(true);
+                Debug.Log("เปิดข้อความ Press E สำเร็จ!");
+            }
+            else
+            {
+                Debug.LogWarning("interactionPromptText เป็นค่า Null หรือมินิเกมเปิดอยู่!");
+            }
         }
     }
 
@@ -54,12 +70,20 @@ public class PaperQuizController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = false;
+
+            if (interactionPromptText != null)
+            {
+                interactionPromptText.SetActive(false);
+            }
         }
     }
 
     void OpenMinigame()
     {
         isMinigameOpen = true;
+
+        if (interactionPromptText != null)
+            interactionPromptText.SetActive(false);
 
         if (minigameCanvas != null)
             minigameCanvas.SetActive(true);
@@ -69,12 +93,10 @@ public class PaperQuizController : MonoBehaviour
             uiQuestionText.text = questionText;
         }
 
-        // หยุดเวลาและปลดล็อกเมาส์
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // ซ่อนแผ่นกระดาษ
         if (gameObject.GetComponent<Renderer>() != null)
             gameObject.GetComponent<Renderer>().enabled = false;
         if (gameObject.GetComponent<Collider>() != null)
@@ -99,21 +121,13 @@ public class PaperQuizController : MonoBehaviour
 
         if (isCorrect)
         {
-            Debug.Log("ตอบถูก! เปลี่ยนไปหน้า WinScene");
             LoadWinScene();
-        }
-        else
-        {
-            Debug.Log("ตอบผิด! ลองใหม่อีกครั้ง");
         }
     }
 
     void LoadWinScene()
     {
-        // คืนค่าเวลาก่อนเปลี่ยน Scene เสมอ ไม่งั้น Scene ใหม่เวลาจะหยุดนิ่ง
         Time.timeScale = 1f;
-
-        // โหลด Scene จบเกมตามชื่อที่กำหนด
         SceneManager.LoadScene(winSceneName);
     }
 }

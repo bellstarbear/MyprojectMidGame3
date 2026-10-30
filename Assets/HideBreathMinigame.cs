@@ -1,5 +1,4 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -46,7 +45,6 @@ public class HideBreathMinigame : MonoBehaviour
 
     private IEnumerator BeginGame()
     {
-        // รอให้ผีเข้ามาสงสัยตู้
         yield return new WaitForSeconds(2f);
 
         if (ghostShadow != null)
@@ -104,9 +102,23 @@ public class HideBreathMinigame : MonoBehaviour
         if (minigamePanel != null)
             minigamePanel.SetActive(false);
 
-        // ผีเดินจากไป
+        // ซ่อนตัวผีเงา (Ghost Shadow) ทันที
         if (ghostShadow != null)
+        {
             ghostShadow.SetActive(false);
+        }
+
+        // ค้นหาผีผ่าน Tag "Ghost" (แนะนำให้ไปตั้ง Tag ที่ตัวผีว่า Ghost)
+        GameObject ghostObj = GameObject.FindWithTag("Ghost");
+        if (ghostObj != null)
+        {
+            ghostObj.SetActive(false);
+        }
+
+        // คืนค่าเวลาและปลดล็อกเมาส์/การเคลื่อนไหว
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         Debug.Log("You survived the ghost!");
     }
@@ -116,6 +128,7 @@ public class HideBreathMinigame : MonoBehaviour
         isPlaying = false;
         isFinished = true;
 
+        Time.timeScale = 1f;
         SceneManager.LoadScene(gameOverSceneName);
     }
 }
