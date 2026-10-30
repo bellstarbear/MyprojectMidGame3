@@ -1,5 +1,4 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,7 +9,6 @@ public class HorrorEventTrigger : MonoBehaviour
 
     public float visibleDuration = 3f;
     public float rushSpeed = 15f;
-    public string gameOverSceneName = "GameOver";
 
     private bool hasTriggered = false;
     private bool isRushing = false;
@@ -63,7 +61,8 @@ public class HorrorEventTrigger : MonoBehaviour
             return;
 
         isRushing = false;
-        SceneManager.LoadScene(gameOverSceneName);
+
+        // สั่งเปลี่ยน Scene ไปหน้า GameOver ทันที (ใส่เครื่องหมายคำพูดครอบชื่อ Scene)
+        SceneManager.LoadScene("GameOver");
     }
 }
-
