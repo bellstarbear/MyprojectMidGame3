@@ -5,6 +5,7 @@ public class HideSystem : MonoBehaviour
 {
     public Transform hidePoint;
     public MonoBehaviour playerMovement;
+    public HideBreathMinigame breathMinigame;
 
     private Transform player;
     private CharacterController characterController;
@@ -21,9 +22,14 @@ public class HideSystem : MonoBehaviour
         if (isNearby && Input.GetKeyDown(KeyCode.E))
         {
             if (!isHidden)
+            {
                 HidePlayer();
-            else
+            }
+            else if (breathMinigame == null ||
+                     !breathMinigame.IsPlaying)
+            {
                 ExitHide();
+            }
         }
     }
 
@@ -75,6 +81,11 @@ public class HideSystem : MonoBehaviour
 
         isHidden = true;
         Debug.Log("You are hiding");
+
+        if (breathMinigame != null)
+        {
+            breathMinigame.StartMinigame();
+        }
     }
 
     void ExitHide()
